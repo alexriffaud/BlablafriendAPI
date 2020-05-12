@@ -5,12 +5,12 @@ module.exports = class eventDAO {
         this.db = db;
     }
     update(id, event, done) {
-        const stmt = this.db.prepare("UPDATE event SET name=?, describe=?, nbLike=?, nbComment=?, creationDate=?, idAuthor=?, isValidated=?, isHide=? WHERE id=?");
-        stmt.run(event.name, event.describe, event.nbLike, event.nbComment, event.creationDate, event.idAuthor,event.isValidated, event.isHide, id, done);
+        const stmt = this.db.query("UPDATE event SET name=?, date=?, description=?, localization=?, idUser=? WHERE id=?");
+        stmt.run(event.name, event.date, event.description, event.localization, event.idUser, id, done);
         stmt.finalize();
     }
     delete(id, done) {
-        const stmt = this.db.prepare("DELETE FROM event WHERE id=?");
+        const stmt = this.db.query("DELETE FROM event WHERE id=?");
         stmt.run(id, done);
         stmt.finalize();
     }
@@ -25,11 +25,11 @@ module.exports = class eventDAO {
 
     getAll(done) {
         let events = [];
-        this.db.each("SELECT * FROM event;",
+        this.db.query("SELECT * FROM event;",
             (err, row) => {
                 if (err == null) {
-                    let p = new event(row.name, row.describe, row.nbLike, row.nbComment, row.creationDate, row.idAuthor, row.isValidated, row.isHide);
-                    p.id = row.idevent;
+                    let p = new event(row.name, row.date, row.description, row.localization, row.idUser);
+                    p.id = row.id;
                     events.push(p);
                 }
             },
@@ -42,11 +42,11 @@ module.exports = class eventDAO {
 
     getByAuthor(id,done) {
         let events = [];
-        this.db.each("SELECT * FROM event where idUser= ?;", [id],
+        this.db.query("SELECT * FROM event where idUser= ?;", [id],
             (err, row) => {
                 if (err == null) {
-                    let p = new event(row.name, row.describe, row.nbLike, row.nbComment, row.creationDate, row.idAuthor, row.isValidated, row.isHide);
-                    p.id = row.idevent;
+                    let p = new event(row.name, row.date, row.description, row.localization, row.idUser);
+                    p.id = row.id;
                     events.push(p);
                 }
             },
@@ -58,8 +58,8 @@ module.exports = class eventDAO {
     }
 
     insert(event, done) {
-        const stmt = this.db.prepare("INSERT INTO event(name, describe, nbLike, nbComment, creationDate, idAuthor, isValidated, isHide) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-        stmt.run([event.name, event.describe, event.nbLike, event.nbComment, event.creationDate, event.idAuthor, event.isValidated, event.isHide], done);
+        const stmt = this.db.query("INSERT INTO event(name, date, description, localization, idUser) VALUES (?, ?, ?, ?, ?)");
+        stmt.run([event.name, event.date, event.description, event.localization, event.idUser], done);
         stmt.finalize();
     }
 };

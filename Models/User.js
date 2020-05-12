@@ -8,7 +8,6 @@ module.exports = class User {
         this.email = email;
 		this.city = city;
         this.birthday = birthday;
-        this.email = email;
 		this.localization = localization;
         this.description = description;
         this.isLogged = isLogged;

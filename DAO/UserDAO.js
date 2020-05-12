@@ -13,24 +13,24 @@ module.exports = class UserDAO {
     }
     getByLogin(login, done) {
         let user = null;
-        this.db.each("SELECT * FROM user WHERE login = ?", [login],
-            (err, row) => { if (err == null) {user = new User(row.login, row.passwordhash, row.admin, row.mail, row.isLogged); user.id = row.id} },
+        this.db.query("SELECT * FROM user WHERE login = ?", [login],
+            (err, row) => { if (err == null) user = Object.assign(new User(), row) },
             () => { done(user) }
         )
     }
     insert(user, done) {
-        const stmt = this.db.prepare("INSERT INTO user(login,passwordhash,admin,mail, isLogged) VALUES (?, ?, ?, ? ,?)");
-        stmt.run([user.login, this.hashPassword(user.password), user.admin, user.mail, user.isLogged], done);
+        const stmt = this.db.query("INSERT INTO user(login, passwordhash, firstname, lastname, email, city, birthday, localization, description, isLogged) VALUES (?, ?, ?, ? ,?, ?, ?, ?, ?, ?)");
+        stmt.run([user.login, this.hashPassword(user.password), user.firstname, user.lastname, user.email, user.city, user.birthday, user.localization, user.description, user.isLogged], done);
         stmt.finalize();
     }
 
 
     getAllUser(done) {
         let users = [];
-        this.db.each("SELECT * FROM user;",
+        this.db.query("SELECT * FROM user;",
             (err, row) => {
                 if (err == null) {
-                    let p = new User(row.login, row.password, row.admin, row.mail);
+                    let p = new User(row.login, row.password, row.firstname, row.lastname, row.email, row.city, row.birthday, row.localization, row.description, row.isLogged);
                     p.id = row.id;
                     users.push(p);
                 }
@@ -43,35 +43,35 @@ module.exports = class UserDAO {
     }
     getById(id, done) {
         let user = null;
-        this.db.each("SELECT * FROM user WHERE idUser = ?", [id],
+        this.db.query("SELECT * FROM user WHERE id = ?", [id],
             (err, row) => { if (err == null) user = Object.assign(new User(), row) },
             () => { done(user) }
         )
     }
 
-    getByName(name, done) {
+    getByName(login, done) {
         let user = null;
-        this.db.each("SELECT * FROM user WHERE login = ?", [name],
+        this.db.query("SELECT * FROM user WHERE login = ?", [login],
             (err, row) => { if (err == null) user = Object.assign(new User(), row) },
             () => { done(user) }
         )
     }
 
-    getByMail(mail, done) {
+    getByMail(email, done) {
         let user = null;
-        this.db.each("SELECT * FROM user WHERE mail = ?", [mail],
+        this.db.query("SELECT * FROM user WHERE email = ?", [email],
             (err, row) => { if (err == null) user = Object.assign(new User(), row) },
             () => { done(user) }
         )
     }
     update(id, user, done) {
-        const stmt = this.db.prepare("UPDATE user SET login=?,passwordhash=?, admin=?, mail=? WHERE idUser=?;");
-        stmt.run(user.login, user.password, user.admin, user.mail, id, done);
+        const stmt = this.db.query("UPDATE user SET login=?,passwordhash=?, firstname=?, lastname=?, email=?, city=?, birthday=?, localization=?, description=?, islogged=?  WHERE id=?;");
+        stmt.run(user.login, user.password, user.firstname, user.lastname, user.email, user.city, user.birthday, user.localization, user.description, user.isLogged, id, done);
         stmt.finalize();
     }
 
     delete(id, done) {
-        const stmt = this.db.prepare("DELETE FROM user WHERE idUser=?");
+        const stmt = this.db.query("DELETE FROM user WHERE id=?");
         stmt.run(id, done);
         stmt.finalize();
     }

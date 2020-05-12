@@ -14,16 +14,6 @@ module.exports = (app, dao) => {
         })
     });
 
-    app.post( "/addList/:idUser?:idEvent", (req, res) => {
-        dao.insertList(req.params.idUser, req.params.idEvent, (err) => {
-            if (err == null) {
-                res.status(200).type('text/plain').end()
-            } else {
-                res.status(500).end()
-            }
-        })
-    });
-
     app.delete("/event/:id", (req, res) => {
         dao.delete(req.params.id, (err) => {
             if (err == null) {
@@ -52,38 +42,6 @@ module.exports = (app, dao) => {
             } else {
 
                 res.json(event)
-            }
-        })
-    });
-
-    app.get("/challengeLike/:idUser:idEvent", (req, res) => {
-        dao.getLikeForUser(req.params.idUser, req.params.idEvent, (event) => {
-            if (event == null) {
-                res.status(404).type('text/plain').end();
-            } else {
-
-                res.json(event)
-            }
-        })
-    });
-
-    app.get("/userAddList/:idUser:idEvent", (req, res) => {
-        dao.getListForUserChallenge(req.params.idUser, req.params.idEvent, (event) => {
-            if (event == null) {
-                res.status(404).type('text/plain').end();
-            } else {
-
-                res.json(event)
-            }
-        })
-    });
-
-    app.get("/listPerso/:idUser", (req, res) => {
-        dao.getListForUser(req.params.idUser, (events) => {
-            if (events == null) {
-                res.status(404).type('text/plain').end();
-            } else {
-                res.json(events)
             }
         })
     });
