@@ -1,7 +1,7 @@
 module.exports = (app, dao) => {
     app.post( "/addevent", (req, res) => {
         const event = req.body;
-        if (event.creationDate === undefined) {
+        if (event.date === undefined) {
             res.status(400).end();
             return
         }

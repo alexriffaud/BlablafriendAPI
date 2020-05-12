@@ -1,6 +1,6 @@
-module.exports = (app, dao, auth) => {
+module.exports = (app, dao) => {
 
-    app.get("/user", auth.isLoggedInAPI, (req, res) => {
+    app.get("/user", (req, res) => {
         res.json(req.user.id)
     });
 
@@ -70,10 +70,13 @@ module.exports = (app, dao, auth) => {
     });
 
     app.delete("/user/:id", (req, res) => {
+        console.log("bbbbbb")
         dao.delete(req.params.id, (err) => {
             if (err == null) {
+                console.log("aaaaa")
                 res.status(200).type('text/plain').end();
             } else {
+                console.log("bbbbbb")
                 res.status(500).end();
             }
         })

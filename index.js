@@ -9,7 +9,6 @@ const morgan = require('morgan');
 
 const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
-const passport = require('passport');
 
 const db = require('mysql');
 
@@ -17,7 +16,8 @@ let con = db.createConnection({
     host: "localhost",
     user: "root",
     password: "password",
-    insecureAuth : true
+    insecureAuth : true,
+    database: 'blablafriend'
 });
 
 con.connect(function(err) {
@@ -33,15 +33,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(morgan('dev'));
 
-app.use(passport.initialize());
-app.use(passport.session());
-const userDAO = new UserDAO(db);
-const auth = require('./passport')(passport, userDAO);
-const eventDAO = new EventDAO(db, auth);
+const userDAO = new UserDAO(con);
+const eventDAO = new EventDAO(con);
 
 require('./API/Event')(app, eventDAO);
-require('./API/User')(app, userDAO, auth);
-require('./route')(app, passport, auth, userDAO);
+require('./API/User')(app, userDAO);
 
 
-app.listen(3333);
+app.listen(3000, () => console.log('Server running on port 3000!'))
