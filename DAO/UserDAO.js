@@ -11,8 +11,20 @@ module.exports = class UserDAO {
     hashPassword(password) {
         return bcrypt.hashSync(password, 10);
     }
+
     getByLogin(login, done) {
         this.db.query("SELECT * FROM user WHERE login = ?", [login], (err,rows) => {
+            if (err) {
+                throw err;
+            } else {
+                done(rows);
+            }
+        });
+    }
+
+    login(login, password, done)
+    {
+        this.db.query("SELECT id, firstname, lastname, login FROM user WHERE login = ? AND password = ?", [login, password], (err,rows) => {
             if (err) {
                 throw err;
             } else {

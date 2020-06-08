@@ -1,5 +1,9 @@
 module.exports = (app, dao) => {
 
+    app.get("/test", (req, res) => {
+        res.json(req.test)
+    });
+
     app.get("/user", (req, res) => {
         res.json(req.user.id)
     });
@@ -70,13 +74,10 @@ module.exports = (app, dao) => {
     });
 
     app.delete("/user/:id", (req, res) => {
-        console.log("bbbbbb")
         dao.delete(req.params.id, (err) => {
             if (err == null) {
-                console.log("aaaaa")
                 res.status(200).type('text/plain').end();
             } else {
-                console.log("bbbbbb")
                 res.status(500).end();
             }
         })
@@ -95,5 +96,16 @@ module.exports = (app, dao) => {
                 res.status(500).end();
             }
         });
+    });
+
+    app.get("/login/:name/:password", (req, res) => {
+
+        dao.login(req.params.name, req.params.password, (user) => {
+            if (user == null) {
+                res.status(404).type('text/plain').end();
+            } else {
+                res.json(user)
+            }
+        })
     });
 };
