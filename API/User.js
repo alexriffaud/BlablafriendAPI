@@ -90,9 +90,10 @@ module.exports = (app, dao) => {
             return
         }
         dao.insert(user, (err) => {
-            if (err == null) {
+            if (err.name !== "OkPacket") {
                 res.status(200).type('text/plain').end();
             } else {
+                console.log("fgfg ", err)
                 res.status(500).end();
             }
         });

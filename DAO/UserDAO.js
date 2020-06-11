@@ -13,7 +13,7 @@ module.exports = class UserDAO {
     }
 
     getByLogin(login, done) {
-        this.db.query("SELECT * FROM user WHERE login = ?", [login], (err,rows) => {
+        this.db.query("SELECT * FROM `user` WHERE login = ?", [login], (err,rows) => {
             if (err) {
                 throw err;
             } else {
@@ -24,7 +24,7 @@ module.exports = class UserDAO {
 
     login(login, password, done)
     {
-        this.db.query("SELECT id, firstname, lastname, login FROM user WHERE login = ? AND password = ?", [login, password], (err,rows) => {
+        this.db.query("SELECT * FROM user WHERE login = ? AND password = ?", [login, password], (err,rows) => {
             if (err) {
                 throw err;
             } else {
@@ -34,7 +34,7 @@ module.exports = class UserDAO {
     }
 
     insert(user, done) {
-        this.db.query("INSERT INTO user SET ?", user, (err, res) => {
+        this.db.query("INSERT INTO `user` (login, firstname, lastname, email, city, birthday, password, localization, description, islogged) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [user.login, user.firstname, user.lastname, user.email, user.city, user.birthday, user.password, "", user.description, 0], (err, res) => {
             if (err) {
                 throw err;
             } else {
