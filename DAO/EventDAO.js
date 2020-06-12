@@ -36,7 +36,6 @@ module.exports = class eventDAO {
     }
 
     getAll(done) {
-        let events = [];
         this.db.query("SELECT * FROM event;", (err,rows) => {
             if (err) {
                 throw err;

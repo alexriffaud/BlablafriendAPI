@@ -96,6 +96,30 @@ module.exports = class UserDAO {
             });
     }
 
+    disconnectUser(id, done) {
+        this.db.query("UPDATE user SET islogged=?  WHERE id=?;",
+            [0, id],
+            (err,rows) => {
+                if (err) {
+                    throw err;
+                } else {
+                    done(rows);
+                }
+            });
+    }
+
+    connectUser(id, done) {
+        this.db.query("UPDATE user SET islogged=?  WHERE id=?;",
+            [1, id],
+            (err,rows) => {
+                if (err) {
+                    throw err;
+                } else {
+                    done(rows);
+                }
+            });
+    }
+
     delete(id, done) {
         this.db.query("DELETE FROM user WHERE id=?", [id], (err, result) => {
             if (err) {

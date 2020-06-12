@@ -73,6 +73,26 @@ module.exports = (app, dao) => {
         })
     });
 
+    app.put("/disconnectuser/:id", (req, res) => {
+        dao.disconnectUser(req.params.id, (err) => {
+            if (err == null) {
+                res.status(200).type('text/plain').end();
+            } else {
+                res.status(500).end();
+            }
+        })
+    });
+
+    app.put("/connectuser/:id", (req, res) => {
+        dao.connectUser(req.params.id, (err) => {
+            if (err == null) {
+                res.status(200).type('text/plain').end();
+            } else {
+                res.status(500).end();
+            }
+        })
+    });
+
     app.delete("/user/:id", (req, res) => {
         dao.delete(req.params.id, (err) => {
             if (err == null) {
@@ -91,9 +111,15 @@ module.exports = (app, dao) => {
         }
         dao.insert(user, (err) => {
             if (err.name !== "OkPacket") {
+                dao.connectUser(user.id, (err) => {
+                    if (err == null) {
+                        res.status(200).type('text/plain').end();
+                    } else {
+                        res.status(500).end();
+                    }
+                })
                 res.status(200).type('text/plain').end();
             } else {
-                console.log("fgfg ", err)
                 res.status(500).end();
             }
         });
@@ -105,6 +131,13 @@ module.exports = (app, dao) => {
             if (user == null) {
                 res.status(404).type('text/plain').end();
             } else {
+                dao.connectUser(user.id, (err) => {
+                    if (err == null) {
+                        res.status(200).type('text/plain').end();
+                    } else {
+                        res.status(500).end();
+                    }
+                })
                 res.json(user)
             }
         })
