@@ -36,7 +36,17 @@ module.exports = class eventDAO {
     }
 
     getAll(done) {
-        this.db.query("SELECT * FROM event;", (err,rows) => {
+        this.db.query("SELECT event.id, event.name, event.description, event.localization, event.date, user.login FROM event LEFT JOIN user ON event.iduser = user.id;", (err,rows) => {
+            if (err) {
+                throw err;
+            } else {
+                done(rows);
+            }
+        });
+    }
+
+    getEventByAuthor(idUser, name, description, done) {
+        this.db.query("SELECT event.id, event.name, event.description, event.localization, event.date, user.login FROM event LEFT JOIN user ON event.iduser = user.id WHERE event.iduser = ? AND event.name = ? AND event.description = ?;", [idUser, name, description], (err,rows) => {
             if (err) {
                 throw err;
             } else {
@@ -46,7 +56,7 @@ module.exports = class eventDAO {
     }
 
     getByAuthor(id,done) {
-        this.db.query("SELECT * FROM event where idUser= ?;", [id], (err,rows) => {
+        this.db.query("SELECT event.id, event.name, event.description, event.localization, event.date, user.login FROM event LEFT JOIN user ON event.iduser = user.id WHERE idUser= ?;", [id], (err,rows) => {
             if (err) {
                 throw err;
             } else {
@@ -57,6 +67,16 @@ module.exports = class eventDAO {
 
     insert(event, done) {
         this.db.query("INSERT INTO event SET ?", event, (err, res) => {
+            if (err) {
+                throw err;
+            } else {
+                done(res);
+            }
+        });
+    }
+
+    insert(event, done) {
+        this.db.query("INSERT INTO `event` (name, description, date, localization, iduser) VALUES (?, ?, ?, ?, ?)", [event.name, event.description, event.date, event.localization, event.idUser], (err, res) => {
             if (err) {
                 throw err;
             } else {

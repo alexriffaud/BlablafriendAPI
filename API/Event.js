@@ -6,11 +6,13 @@ module.exports = (app, dao) => {
             return
         }
         dao.insert(event, (err) => {
-            if (err == null) {
-                res.status(200).type('text/plain').end()
-            } else {
-                res.status(500).end()
-            }
+                dao.getEventByAuthor(event.idUser, event.name, event.description, (event) => {
+                    if (event == null) {
+                        res.status(404).type('text/plain').end();
+                    } else {
+                        res.json(event)
+                    }
+                })
         })
     });
 
@@ -40,7 +42,16 @@ module.exports = (app, dao) => {
             if (event == null) {
                 res.status(404).type('text/plain').end();
             } else {
+                res.json(event)
+            }
+        })
+    });
 
+    app.get("/event/:idUser/:name/:description", (req, res) => {
+        dao.getEventByAuthor(req.params.idUser, req.params.name, req.params.description, (event) => {
+            if (event == null) {
+                res.status(404).type('text/plain').end();
+            } else {
                 res.json(event)
             }
         })
