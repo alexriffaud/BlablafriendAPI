@@ -6,7 +6,7 @@ module.exports = class eventDAO {
     }
     update(id, event, done) {
         this.db.query("UPDATE event SET name=?, date=?, description=?, localization=?, idUser=? WHERE id=?",
-            event.name, event.date, event.description, event.localization, event.idUser,
+            [event.name, event.date, event.description, event.localization, event.idUser, id],
             (err,rows) => {
                 if (err) {
                     throw err;
