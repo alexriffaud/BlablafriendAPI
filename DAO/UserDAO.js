@@ -1,15 +1,8 @@
-const bcrypt = require('bcrypt');
 const User = require('../Models/User');
 
 module.exports = class UserDAO {
     constructor(db) {
         this.db = db;
-    }
-    comparePassword(password, hash) {
-        return bcrypt.compareSync(password, hash);
-    }
-    hashPassword(password) {
-        return bcrypt.hashSync(password, 10);
     }
 
     getByLogin(login, done) {
