@@ -15,6 +15,16 @@ module.exports = (app, dao) => {
                 })
         })
     });
+  
+      app.post( "/participate/:iduser/:idevent", (req, res) => {
+        dao.participate(req.params.iduser, req.params.idevent, (err) => {
+                    if (res == null) {
+                        res.status(404).type('text/plain').end();
+                    } else {
+                        res.status(200).type('text/plain').end();
+                    }
+        })
+    });
 
     app.delete("/event/:id", (req, res) => {
         dao.delete(req.params.id, (err) => {
@@ -76,4 +86,15 @@ module.exports = (app, dao) => {
             }
         })
     });
+  
+      app.get("/participate/:id", (req, res) => {
+        dao.getUserByEvent(req.params.id,(users) => {
+            if (users == null) {
+                res.status(404).type('text/plain').end();
+            } else {
+                res.json(users)
+            }
+        })
+    });
 };
+

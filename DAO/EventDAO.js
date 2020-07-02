@@ -1,12 +1,12 @@
-const event = require('../Models/event.js');
+const event = require('../Models/Event.js');
 
 module.exports = class eventDAO {
     constructor(db) {
         this.db = db;
     }
     update(id, event, done) {
-        this.db.query("UPDATE event SET name=?, date=?, description=?, localization=?, idUser=? WHERE id=?",
-            [event.name, event.date, event.description, event.localization, event.idUser, id],
+        this.db.query("UPDATE event SET name=?, date=?, description=?, localization=?, hour=?, idUser=? WHERE id=?",
+            [event.name, event.date, event.description, event.localization, event.idUser,event.hour, id],
             (err,rows) => {
                 if (err) {
                     throw err;
@@ -26,7 +26,7 @@ module.exports = class eventDAO {
     }
 
     getById(id, done) {
-        this.db.query("SELECT * FROM event WHERE id = ?", [id], (err,rows) => {
+        this.db.query("SELECT event.id, event.name, event.description, event.localization, event.date, user.login FROM event LEFT JOIN user ON event.iduser = user.id WHERE id = ?", [id], (err,rows) => {
             if (err) {
                 throw err;
             } else {
@@ -36,7 +36,7 @@ module.exports = class eventDAO {
     }
 
     getAll(done) {
-        this.db.query("SELECT event.id, event.name, event.description, event.localization, event.date, user.login FROM event LEFT JOIN user ON event.iduser = user.id;", (err,rows) => {
+        this.db.query("SELECT event.id, event.name, event.description, event.localization, event.date, event.hour, user.login FROM event LEFT JOIN user ON event.iduser = user.id;", (err,rows) => {
             if (err) {
                 throw err;
             } else {
@@ -46,7 +46,7 @@ module.exports = class eventDAO {
     }
 
     getEventByAuthor(idUser, name, description, done) {
-        this.db.query("SELECT event.id, event.name, event.description, event.localization, event.date, user.login FROM event LEFT JOIN user ON event.iduser = user.id WHERE event.iduser = ? AND event.name = ? AND event.description = ?;", [idUser, name, description], (err,rows) => {
+        this.db.query("SELECT event.id, event.name, event.description, event.localization, event.date, event.hour, user.login FROM event LEFT JOIN user ON event.iduser = user.id WHERE event.iduser = ? AND event.name = ? AND event.description = ?;", [idUser, name, description], (err,rows) => {
             if (err) {
                 throw err;
             } else {
@@ -56,7 +56,7 @@ module.exports = class eventDAO {
     }
 
     getByAuthor(id,done) {
-        this.db.query("SELECT event.id, event.name, event.description, event.localization, event.date, user.login FROM event LEFT JOIN user ON event.iduser = user.id WHERE idUser= ?;", [id], (err,rows) => {
+        this.db.query("SELECT event.id, event.name, event.description, event.localization, event.date, event.hour, user.login FROM event LEFT JOIN user ON event.iduser = user.id WHERE idUser= ?;", [id], (err,rows) => {
             if (err) {
                 throw err;
             } else {
@@ -76,7 +76,7 @@ module.exports = class eventDAO {
     }
 
     insert(event, done) {
-        this.db.query("INSERT INTO `event` (name, description, date, localization, iduser) VALUES (?, ?, ?, ?, ?)", [event.name, event.description, event.date, event.localization, event.idUser], (err, res) => {
+        this.db.query("INSERT INTO `event` (name, description, date, localization, iduser, hour) VALUES (?, ?, ?, ?, ?, ?)", [event.name, event.description, event.date, event.localization, event.idUser, event.hour], (err, res) => {
             if (err) {
                 throw err;
             } else {
@@ -84,4 +84,26 @@ module.exports = class eventDAO {
             }
         });
     }
+  
+      participate(iduser, idevent, done) {
+        this.db.query("INSERT INTO `joineventuser` (iduser, idevent) VALUES (?, ?)", [iduser, idevent], (err, res) => {
+            if (err) {
+                throw err;
+            } else {
+                done(res);
+            }
+        });
+    }
+  
+      getUserByEvent(id,done) {
+        this.db.query("SELECT user.login FROM joineventuser LEFT JOIN user ON joineventuser.iduser = user.id WHERE joineventuser.idevent=?;", [id], (err,rows) => {
+            if (err) {
+                throw err;
+            } else {
+                done(rows);
+            }
+        });
+    }
 };
+
+

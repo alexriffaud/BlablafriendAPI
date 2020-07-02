@@ -13,9 +13,9 @@ const cookieSession = require('cookie-session');
 const db = require('mysql');
 
 let con = db.createConnection({
-    host: "localhost",
+    host: "node67793-env-4709756.hidora.com",
     user: "root",
-    password: "password",
+    password: "VBRrsn58183",
     insecureAuth : true,
     database: 'blablafriend'
 });
@@ -40,4 +40,5 @@ require('./API/Event')(app, eventDAO);
 require('./API/User')(app, userDAO);
 
 
-app.listen(3000, () => console.log('Server running on port 3000!'))
+app.listen(8686, () => console.log('Server running on port 3000!'))
+

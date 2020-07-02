@@ -78,8 +78,8 @@ module.exports = class UserDAO {
     }
 
     update(id, user, done) {
-        this.db.query("UPDATE user SET login=?,passwordhash=?, firstname=?, lastname=?, email=?, city=?, birthday=?, localization=?, description=?, islogged=?  WHERE id=?;",
-            [user.login, user.password, user.firstname, user.lastname, user.email, user.city, user.birthday, user.localization, user.description, user.isLogged, id],
+        this.db.query("UPDATE user SET login=?, firstname=?, lastname=?, city=?, description=? WHERE id=?;",
+            [user.login, user.firstname, user.lastname, user.city, user.description, id],
             (err,rows) => {
                 if (err) {
                     throw err;
@@ -123,3 +123,5 @@ module.exports = class UserDAO {
         });
     }
 };
+
+
